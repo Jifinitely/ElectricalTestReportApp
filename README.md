@@ -29,23 +29,6 @@ The app is designed to comply with:
 - AS/NZS 3018:2017 (Electrical Installations - Verification Guidelines)
 - AS/NZS 3008.1.1:2017 (Selection of Cables)
 
-## Screenshots
-
-### Standards Reference & Table
-![Test Standards Reference](screenshots/test_standards.jpg)
-*View and search key requirements for a pass, with tappable links to tables and sections.*
-
-![Table 8.1 Modal](screenshots/table_81_modal.jpg)
-*View full details for AS/NZS 3000 Table 8.1 (Earth Continuity) in a modal.*
-
-### History
-![History Tab](screenshots/history.jpg)
-*View and share previously exported reports.*
-
-### Test Results Entry
-![Test Results Entry](screenshots/test_results_entry.jpg)
-*Enter up to 8 test results per report, with clear labels for each field.*
-
 ## Setup
 1. Clone this repository.
 2. Open the project in Xcode (iOS 15+ recommended).
