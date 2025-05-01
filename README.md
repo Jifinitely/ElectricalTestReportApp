@@ -12,6 +12,23 @@ A SwiftUI app for creating, previewing, and exporting electrical test reports in
 - Data backup/restore (ZIP export/import)
 - In-app help and FAQ
 
+## About
+The Electrical Test Report App is designed to streamline the process of creating and managing electrical test reports for electricians and electrical contractors. The app helps ensure compliance with Australian and New Zealand electrical safety standards while making the documentation process more efficient and error-free.
+
+### Key Benefits
+- **Time-Saving**: Quickly generate professional test reports with automatic calculations and standard compliance checks
+- **Accuracy**: Built-in validation and automatic unit conversions reduce human error
+- **Compliance**: Direct access to relevant AS/NZS standards within the app
+- **Professional Output**: Generate branded PDF reports with company details and digital signatures
+- **Data Management**: Easy backup and restore functionality for test records
+- **User-Friendly**: Intuitive interface designed specifically for electricians
+
+### Standards Compliance
+The app is designed to comply with:
+- AS/NZS 3000:2018 (Wiring Rules)
+- AS/NZS 3018:2017 (Electrical Installations - Verification Guidelines)
+- AS/NZS 3008.1.1:2017 (Selection of Cables)
+
 ## Screenshots
 
 ### Standards Reference & Table
