@@ -24,14 +24,14 @@ struct TestResultsPreviewView: View {
                                     Text(result.circuitOrEquipment).frame(width: 80)
                                     Text(result.visualInspection).frame(width: 80)
                                     Text(result.circuitNo).frame(width: 80)
-                                    Text(result.cableSize).frame(width: 80)
+                                    Text(result.cableSize.isEmpty ? "" : "\(result.cableSize) mm²").frame(width: 80)
                                     Text(result.protectionSizeType).frame(width: 80)
                                     Text(result.neutralNo).frame(width: 80)
-                                    Text(result.earthContinuity).frame(width: 80)
+                                    Text(result.earthContinuity.isEmpty ? "" : "< \(result.earthContinuity)").frame(width: 80)
                                     Text(result.rcd).frame(width: 80)
-                                    Text(result.insulationResistance).frame(width: 80)
+                                    Text(result.insulationResistance.isEmpty ? "" : "> \(result.insulationResistance)").frame(width: 80)
                                     Text(result.polarityTest).frame(width: 80)
-                                    Text(result.faultLoopImpedance).frame(width: 80)
+                                    Text(result.faultLoopImpedance.isEmpty ? "" : "< \(result.faultLoopImpedance)").frame(width: 80)
                                     Text(result.operationalTest).frame(width: 80)
                                 }
                                 Button(action: { testResults.remove(at: i) }) {

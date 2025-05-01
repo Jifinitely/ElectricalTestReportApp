@@ -1,9 +1,12 @@
 import SwiftUI
+import PDFKit
 
 struct HistoryView: View {
     @State private var reports: [ElectricalTestReport] = HistoryStorage.load()
     @State private var showShareSheet = false
     @State private var pdfDataToShare: Data? = nil
+    @State private var pdfPreviewData: Data? = nil
+    @State private var showPDFPreview = false
 
     var body: some View {
         VStack {
@@ -31,6 +34,16 @@ struct HistoryView: View {
                                         .padding(.leading, 8)
                                 }
                                 .buttonStyle(BorderlessButtonStyle())
+                                
+                                Button(action: {
+                                    pdfPreviewData = PDFGenerator.generatePDF(report: report, signature: nil)
+                                    showPDFPreview = true
+                                }) {
+                                    Image(systemName: "doc.text.magnifyingglass")
+                                        .imageScale(.large)
+                                        .padding(.leading, 8)
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
                             }
                         }
                     }
@@ -42,6 +55,13 @@ struct HistoryView: View {
         .sheet(isPresented: $showShareSheet) {
             if let data = pdfDataToShare {
                 ActivityView(activityItems: [data])
+            }
+        }
+        .sheet(isPresented: $showPDFPreview) {
+            if let data = pdfPreviewData, let pdfDoc = PDFDocument(data: data) {
+                PDFKitRepresentedView(pdfDocument: pdfDoc)
+            } else {
+                Text("PDF Preview not available.")
             }
         }
         .onAppear {

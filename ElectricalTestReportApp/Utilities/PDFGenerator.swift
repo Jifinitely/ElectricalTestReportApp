@@ -57,33 +57,38 @@ struct PDFGenerator {
                 rightValues[i].draw(at: CGPoint(x: rightX + 110, y: fieldY0 + CGFloat(i)*fieldSpacing), withAttributes: [.font: monoFont])
             }
             // Table
-            let tableY: CGFloat = fieldY0 + CGFloat(leftFields.count)*fieldSpacing + 16
-            let colWidths: [CGFloat] = [
-                44, 62, 62, 32, 40, 62, 32, 50, 28, 58, 74, 50, 57.8
+            let tableY: CGFloat = fieldY0 + CGFloat(leftFields.count)*fieldSpacing + 8
+            // Unscaled widths for each column
+            let baseColWidths: [CGFloat] = [
+                65, 85, 80, 55, 60, 85, 55, 75, 45, 85, 85, 85, 75
             ]
-            let tableWidth: CGFloat = colWidths.reduce(0, +)
+            let baseTotal: CGFloat = baseColWidths.reduce(0, +)
+            let tableWidth: CGFloat = 800
+            let scale = tableWidth / baseTotal
+            let colWidths = baseColWidths.map { $0 * scale }
             let tableX: CGFloat = (pageWidth - tableWidth) / 2
-            let rowHeight: CGFloat = 28
+            let rowHeight: CGFloat = 32
             let colTitles = [
                 "Test Date",
                 "Circuit or Equipment",
-                "Visual Inspection Complete\n(Pass/Fail)",
+                "Visual Inspection\nComplete\n(Pass/Fail)",
                 "Circuit No.",
                 "Cable Size",
-                "Protection Size and Type",
+                "Protection Size\nand Type",
                 "Neutral No.",
                 "Earth Continuity\n(Ohms)",
                 "RCD",
-                "Insulation Resistance\n(MEGOHM)",
-                "Polarity Test Equipment or\nCircuit (Pass/Fail)",
-                "Fault Loop Impedance Test\n(Ohms)",
-                "Operational Test\n(Pass/Fail)"
+                "Insulation\nResistance\n(MEGOHM)",
+                "Polarity Test\nEquip./Circuit\n(Pass/Fail)",
+                "Fault Loop\nImpedance\nTest (Ohms)",
+                "Operational\nTest\n(Pass/Fail)"
             ]
             // Draw table header
             var x = tableX
+            let headerRowHeight: CGFloat = 48
             for (i, title) in colTitles.enumerated() {
                 let w = colWidths[i]
-                let headerRect = CGRect(x: x, y: tableY, width: w, height: rowHeight)
+                let headerRect = CGRect(x: x, y: tableY, width: w, height: headerRowHeight)
                 // Center multi-line header text
                 let lines = title.components(separatedBy: "\n")
                 let headerFont = staticFontBold.withSize(7)
@@ -102,7 +107,7 @@ struct PDFGenerator {
             let maxRows = max(8, report.testResults.count)
             for row in 0..<maxRows {
                 x = tableX
-                let y = tableY + rowHeight * CGFloat(row + 1)
+                let y = tableY + headerRowHeight + rowHeight * CGFloat(row)
                 for (col, w) in colWidths.enumerated() {
                     let cellRect = CGRect(x: x, y: y, width: w, height: rowHeight)
                     cgctx.stroke(cellRect)
@@ -114,14 +119,14 @@ struct PDFGenerator {
                             result.circuitOrEquipment,
                             result.visualInspection,
                             result.circuitNo,
-                            result.cableSize,
+                            result.cableSize.isEmpty ? "" : "\(result.cableSize) mm²",
                             result.protectionSizeType,
                             result.neutralNo,
-                            result.earthContinuity,
+                            result.earthContinuity.isEmpty ? "" : "< \(result.earthContinuity)",
                             result.rcd,
-                            result.insulationResistance,
+                            result.insulationResistance.isEmpty ? "" : "> \(result.insulationResistance)",
                             result.polarityTest,
-                            result.faultLoopImpedance,
+                            result.faultLoopImpedance.isEmpty ? "" : "< \(result.faultLoopImpedance)",
                             result.operationalTest
                         ]
                         if col < values.count {
@@ -134,20 +139,21 @@ struct PDFGenerator {
                 }
             }
             // Footer
-            let certY = tableY + rowHeight * CGFloat(maxRows + 1) + 10
+            let certY = tableY + headerRowHeight + rowHeight * CGFloat(maxRows) + 20
             let certText = "I certify that the electrical installation, to the extent that it is effected by the electrical work, has been tested to ensure it is electrically safe and is in accordance with the requirements of the wiring rules and any other standard applying to the electrical installation under the Electrical Safety Regulation 2002."
-            certText.draw(in: CGRect(x: tableX, y: certY, width: tableWidth, height: 40), withAttributes: [.font: staticFont])
-            let footerY = certY + 40
-            "Tested by:".draw(at: CGPoint(x: tableX, y: footerY), withAttributes: [.font: staticFont])
+            let footerFont = staticFont.withSize(9)
+            certText.draw(in: CGRect(x: tableX, y: certY, width: tableWidth, height: 32), withAttributes: [.font: footerFont])
+            let footerY = certY + 32
+            "Tested by:".draw(at: CGPoint(x: tableX, y: footerY), withAttributes: [.font: footerFont])
             report.testedBy.draw(at: CGPoint(x: tableX + 60, y: footerY), withAttributes: [.font: monoFont])
-            "Licence Number:".draw(at: CGPoint(x: tableX + 220, y: footerY), withAttributes: [.font: staticFont])
+            "Licence Number:".draw(at: CGPoint(x: tableX + 220, y: footerY), withAttributes: [.font: footerFont])
             report.licenceNumber.draw(at: CGPoint(x: tableX + 320, y: footerY), withAttributes: [.font: monoFont])
-            "Tester's Signature:".draw(at: CGPoint(x: tableX + 420, y: footerY), withAttributes: [.font: staticFont])
+            "Tester's Signature:".draw(at: CGPoint(x: tableX + 420, y: footerY), withAttributes: [.font: footerFont])
             // Draw signature image if available
             if let signature = signature {
                 signature.draw(in: CGRect(x: tableX + 540, y: footerY - 8, width: 60, height: 24))
             }
-            "Date:".draw(at: CGPoint(x: tableX + 620, y: footerY), withAttributes: [.font: staticFont])
+            "Date:".draw(at: CGPoint(x: tableX + 620, y: footerY), withAttributes: [.font: footerFont])
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .short
             dateFormatter.timeStyle = .none
